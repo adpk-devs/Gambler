@@ -1,62 +1,65 @@
 #Slot machine
-print("Welcome to the slot machine.")
-
+print('''                                               Welcome to the slot machine!''')
 import pandas as pd
 import numpy as np
 import os 
 import time
 import random
 
+money=int(0)
+debt=int(0)
+earnings=0
 
-slot=[]
-error=0
-points=int(0)
 while True:
-    if error==0:
-        if points>0:
-            opt=int(input('''If you want to add money, enter '1'.
-If you want to continue gambling, enter '0'.
-'''))
-        elif error==0:
-            opt=1
-        elif error==1:
-            opt=1
-        elif error==2:
-            opt=0
-    if opt==1:
-        if error==0:
-            money=int(input("How much money do you want to add?(Max 100$):"))
-        elif error==1:
-            money=int(input("Enter a valid amount!:"))
-            error=0
+#Money Loaning
+    while True:
+        if money>0:
+            opt=(input("Do you want to loan more money?('Yes' or 'No'):").lower())
+            if opt=="yes" or opt=="no":
+                break
+            else:
+                print("Please enter 'Yes' or 'No'!")
+                continue
         else:
-            pass
-    else:
-        pass
-    if money<=100:
-        pass
-    else:
-        print("\nYou can't add that much money!\n")
-        error=1
-        continue
-    if opt==1:
-        points+=money
- 
-    print('\n\nYour current money:',points,"$")
+            opt="yes"
+        break
 
-    if error==2:
-        pt=int(input('Enter an amount in accordance to your status(Wallet):'))
+    while True:
+        if opt=="yes":
+            loan=int(input("\nHow much money would you like to loan?(Max 100$):"))
+            
+        if loan>100:
+            print("\nYou can't loan that much money!")
+            continue
+        if opt=="yes":
+            print(loan,"$  added to your wallet")
+            print(loan,"$  added to your debt")
+        break
+
+#Wallet Calculations
+    if debt>0:
+        debt-=earnings*0.5
+        money+=earnings*0.5
     else:
-        pt=int(input('How much money would you like to bet?:'))
+        money+=earnings
+    if opt=="yes":
+        money+=loan
+        debt+=loan
+    print("\nWallet:",money,"$")
+    print("Debt:",debt,"$")
+
     
-    if pt<=points:
-        pass
-    else:
-        print("\nYou don't have that much money!\n")
-        error=2
-        continue
-    
-    for i in range(0,25):
+    while True:
+        bid=int(input('How much money would you like to bet?:'))
+        print("\n")
+        if bid<=money:
+            break
+        else:
+            print("Enter an amount in accordance to your status(Wallet)!\n")
+            continue
+
+#SlotMachine
+    for i in range(0,50):
         slot=[]
         val=np.random.randint(1,4,size=3)
         for i in range(len(val)):
@@ -79,40 +82,42 @@ If you want to continue gambling, enter '0'.
                  heart.append(slot[i])
             elif slot[i]=='♠':
                  ace.append(slot[i])
-        print('''Welcome to the slot machine.
 
-
-Your current money:''',points,"$")
-        print("How much money would you like to bet?:",pt,"\n")
-        print("               ",slot[0],"   ",slot[1],"   ",slot[2])  
-        
+        print("                                         ",slot[0],"     ",slot[1],"     ",slot[2])  
         time.sleep(0.1)
-        os.system("cls" if os.name == "nt" else "clear")
-
+        print("\033[A                             \033[A")   
         
-        
-    print('''Welcome to the slot machine.
-
-
-Your current money:''',points,"$")
-    print("How much points would you like to bet?:",pt,"\n")    
-    print("               ",slot[0],"   ",slot[1],"   ",slot[2])
-        
-        
+#Result determination       
     print("\n\nResult:",slot)
     if len(dia)==3 or len(heart)==3 or len(ace)==3:
-        print("Jackpot!")
-        print(pt*7,'$ added to your wallet!')
-        points+=pt*7
+        print("Three of a kind - Jackpot!")
+        earnings=bid*7
+        if debt>0:
+            print(earnings*0.5,"\n$ added to your wallet!")
+            print(earnings*0.5,"$ Subtracted from your debt!")
+        else:
+            print(earnings,"\n$ added to your wallet!")
         
     elif len(dia)==2 or len(heart)==2 or len(ace)==2:
-        print("You broke even.")
-        points=points-(pt*0.5)
+        print("Two of a kind - You get your bid back.")
+        if debt>0:
+            print(debt*0.05,"$ added to your debt.")
+            debt+=debt*0.05
+        earnings=0
         
     else:
-        print("You lost!, better luck next time.")
-        points=points-pt
-        
-    print('\n\nYour current money:',points,"$")
+        print("One of a kind - You lost!")
+        print(bid,"$ deducted from your wallet")
+        earnings=-bid
 
+    print("\nEnter anything to continue:")
+    input() 
+    os.system("cls" if os.name == "nt" else "clear")
 
+#Wallet status
+    if debt>0:
+        print('\n\nWallet:',money+(earnings*0.5),"$")
+        print('Debt:',debt-(earnings*0.5),"$")
+    else:
+        print('\n\nWallet:',money+earnings,"$")
+        print('Debt: None')
