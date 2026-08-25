@@ -1,4 +1,4 @@
-# Slot machine
+# Slot machine.
 print("""                                               Welcome to the slot machine!""")
 
 import os
@@ -28,6 +28,8 @@ while True:
     while True:
         if opt == "yes":
             loan = int(input("\nHow much money would you like to loan?(Max 100$):"))
+        else:
+            loan = 0
 
         if loan > 100:
             print("\nYou can't loan that much money!")
@@ -36,25 +38,13 @@ while True:
         print(loan, "$  added to your debt")
         break
 
-    # Wallet Calculations
-    if debt > 0:
-        if result == "win":
-            if earnings * 0.5 > debt:
-                money += (earnings * 0.5) + (earnings * 0.5 - debt)
-                debt = 0
-            else:
-                debt -= earnings * 0.5
-                money += earnings * 0.5
-        else:
-            money += earnings
-    else:
-        money += earnings
     if opt == "yes":
         money += loan
         debt += loan
     print("\nWallet:", money, "$")
     print("Debt:", debt, "$")
 
+    # Betting
     while True:
         bid = int(input("How much money would you like to bet?:"))
         print("\n")
@@ -65,7 +55,7 @@ while True:
             continue
 
     # SlotMachine
-    for i in range(50):
+    for i in range(25):
         slot = []
         val = np.random.randint(1, 4, size=3)
         for i in range(len(val)):
@@ -120,8 +110,8 @@ while True:
     elif len(dia) == 2 or len(heart) == 2 or len(ace) == 2:
         print("Two of a kind - You get your bid back.")
         if debt > 0:
-            print(debt * 0.1, "$ added to your debt.")
-            debt += debt * 0.1
+            print(round(debt * 0.1, 0), "$ added to your debt.")
+            debt += round(debt * 0.1, 0)
         earnings = 0
         result = "draw"
     else:
@@ -134,22 +124,35 @@ while True:
     input()
     os.system("cls" if os.name == "nt" else "clear")
 
-    # Wallet status
+    # Wallet calculation
+    if debt > 0:
+        if result == "win":
+            if earnings * 0.5 > debt:
+                money += (earnings * 0.5) + (earnings * 0.5 - debt)
+                debt = 0
+            else:
+                debt -= earnings * 0.5
+                money += earnings * 0.5
+        else:
+            money += earnings
+    else:
+        money += earnings
+
     if debt > 0:
         if result == "win":
             if earnings * 0.5 > debt:
                 print(
                     "\n\nWallet:",
-                    money + (earnings * 0.5) + (earnings * 0.5 - debt),
+                    money,
                     "$",
                 )
                 print("Debt: None")
             else:
-                print("\n\nWallet:", money + (earnings * 0.5), "$")
-                print("Debt:", debt - (earnings * 0.5), "$")
+                print("\n\nWallet:", money, "$")
+                print("Debt:", debt, "$")
         else:
-            print("\n\nWallet:", money + earnings, "$")
+            print("\n\nWallet:", money, "$")
             print("Debt:", debt, "$")
     else:
-        print("\n\nWallet:", money + earnings, "$")
+        print("\n\nWallet:", money, "$")
         print("Debt: None")
