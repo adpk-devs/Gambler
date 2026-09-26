@@ -92,7 +92,7 @@ while True:
     print("\n\nResult:", slot)
     if len(dia) == 3 or len(heart) == 3 or len(ace) == 3:
         print("Three of a kind - Jackpot!")
-        earnings = bid * 3
+        earnings = bid * 5
         if debt > 0:
             if earnings * 0.5 > debt:
                 print(
